@@ -46,9 +46,12 @@ namespace ElevenNote.Data
 
     }
 
-    public class IdentityUserLoginConfiguration : EntityTypeConfiguration<IdentityUserRole>
+    public class IdentityUserLoginConfiguration : EntityTypeConfiguration<IdentityUserLogin>
     {
-
+        public IdentityUserLoginConfiguration()
+        {
+            HasKey(iur => iur.UserId);
+        }
     }
     public class IdentityUserRoleConfiguration : EntityTypeConfiguration<IdentityUserRole>
     {
