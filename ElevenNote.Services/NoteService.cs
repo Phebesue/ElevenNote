@@ -22,7 +22,7 @@ namespace ElevenNote.Services
             var entity =
                 new Note()
                 {
-                    OwnerID = _userId,
+                    OwnerId = _userId,
                     Title = model.Title,
                     Content = model.Content,
                     CreateUtc = DateTimeOffset.Now
@@ -40,7 +40,7 @@ namespace ElevenNote.Services
             {
                 var query =
                     ctx.Notes
-                    .Where(e => e.OwnerID == _userId)
+                    .Where(e => e.OwnerId == _userId)
                     .Select(
                         e =>
                         new NoteListItem
@@ -67,7 +67,7 @@ namespace ElevenNote.Services
                         NoteId = entity.NoteId,
                         Title = entity.Title,
                         Content = entity.Content,
-                        CreatedUtc = entity.CreatedUtc,
+                        CreatedUtc = entity.CreateUtc,
                         ModifiedUtc = entity.ModifiedUtc
                     };
             }
@@ -83,6 +83,20 @@ namespace ElevenNote.Services
                 entity.Title = model.Title;
                 entity.Content = model.Content;
                 entity.ModifiedUtc = DateTimeOffset.UtcNow;
+
+                return ctx.SaveChanges() == 1;
+            }
+        }
+        public bool DeleteNote(int noteId)
+        {
+            using (var ctx = new ApplicationDbContext())
+            {
+                var entity =
+                    ctx
+                        .Notes
+                        .Single(e => e.NoteId == noteId && e.OwnerId == _userId);
+
+                ctx.Notes.Remove(entity);
 
                 return ctx.SaveChanges() == 1;
             }
